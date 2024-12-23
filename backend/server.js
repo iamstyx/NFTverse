@@ -8,11 +8,24 @@ import profileRoutes from './routes/profile.routes.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.VERCEL_URL, /\.vercel\.app$/]
+    : ['http://localhost:5173', 'http://localhost:4173'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+app.use((req, res, next) => {
+  if (req.path.endsWith('.js')) {
+    res.type('application/javascript');
+  }
+  next();
+});
 
 // Routes
 app.use('/api/nfts', nftRoutes);
@@ -27,10 +40,18 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 // Basic route
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ message: 'Welcome to NFT Marketplace API' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Handle Vercel serverless functions
+if (process.env.VERCEL) {
+  app.listen();
+} else {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+export default app;

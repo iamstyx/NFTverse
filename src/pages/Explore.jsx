@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 const FEATURED_NFTS = [
   {
@@ -36,7 +37,7 @@ const Explore = () => {
 
   const fetchNFTs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/nfts');
+      const response = await axios.get(`${API_BASE_URL}/nfts`);
       setNfts([...FEATURED_NFTS, ...response.data]);
       setError(null);
     } catch (error) {

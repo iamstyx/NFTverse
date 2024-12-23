@@ -33,7 +33,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/profiles/${address}`);
+      const response = await axios.get(`/api/profiles/${address}`);
       setProfile(response.data);
       setFormData({
         username: response.data.username || '',

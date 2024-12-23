@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import axios from 'axios';
 import Hero from '../components/Hero';
+import API_BASE_URL from '../config/api';
 
 const Home = () => {
   const [nfts, setNfts] = useState([]);
@@ -15,7 +16,7 @@ const Home = () => {
 
   const fetchNFTs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/nfts');
+      const response = await axios.get(`${API_BASE_URL}/nfts`);
       setNfts(response.data);
       setError(null);
     } catch (error) {
